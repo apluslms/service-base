@@ -1,0 +1,8 @@
+#!/bin/sh
+
+ver=${CACHE_TAG##*-}
+if [ "$ver" -a "$ver" != "$CACHE_TAG" ]; then
+    ver="-$ver"
+fi
+
+docker build --build-arg "TAGVER=$ver" -f $DOCKERFILE_PATH -t $IMAGE_NAME .

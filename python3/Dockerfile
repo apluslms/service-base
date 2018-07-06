@@ -1,4 +1,5 @@
-FROM apluslms/service-base:dbipc
+ARG TAGVER=
+FROM apluslms/service-base:dbipc${TAGVER}
 
 COPY rootfs /
 
