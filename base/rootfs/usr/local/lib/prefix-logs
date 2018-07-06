@@ -1,0 +1,8 @@
+#!/bin/execlineb -P
+backtick -n NAME {
+    pipeline { pipeline { pwd } cut -d/ -f5 } tr "-" " "
+}
+importas -u NAME NAME
+
+s6-setuidgid nobody
+s6-format-filter "[${NAME}] %s"

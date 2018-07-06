@@ -1,0 +1,8 @@
+#!/bin/execlineb -P
+
+define pid /var/run/rabbitmq/pid
+
+foreground {
+    if { test -e ${pid} }
+    rm ${pid}
+}

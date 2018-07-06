@@ -1,0 +1,13 @@
+#!/bin/sh -eu
+
+find /srv/ -mindepth 2 -maxdepth 2 -type f -iname 'requirements.txt' | while read regs; do
+    name=${regs#/srv/}
+    name=${name%%/*}
+    venv=/local/venv_$name
+
+    [ -e "$venv" ] || python3 -m virtualenv -p python3 --system-site-packages "$venv"
+
+    # Use shared cache for all containers with same data volume
+    mkdir -p /data/.pip
+    "$venv/bin/pip3" install --cache-dir=/data/.pip --disable-pip-version-check -r "$regs"
+done

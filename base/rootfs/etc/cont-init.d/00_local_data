@@ -1,0 +1,11 @@
+#!/usr/bin/with-contenv /bin/sh
+
+if ! [ -e /local ]; then
+    name=${CONTAINER_TYPE:-unknown}${CONTAINER_NAME:+_}${CONTAINER_NAME:-}
+    data="/data/$name"
+
+    if ! [ -d "$data" ]; then
+        mkdir -p "$data"
+    fi
+    ln -sf "$data" /local
+fi

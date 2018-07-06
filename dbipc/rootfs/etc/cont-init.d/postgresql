@@ -1,0 +1,31 @@
+#!/bin/sh
+export LANG=C.UTF-8
+
+# utilities
+. /usr/local/lib/cont-init-functions.sh
+ENSURE_DIR_MODE=2775
+ENSURE_DIR_USER=postgres
+
+ver=$(ls /usr/lib/postgresql/ | tail -n1)
+SIMPLE_CONF_PATH=/etc/postgresql/$ver/main/postgresql.conf
+
+# create /var/run/postgresql
+ensure_dir /var/run/postgresql
+
+# create stat dir
+ensure_dir "$(get_simple_conf stats_temp_directory | strip_quotes)" 0700
+
+# create db dir
+db_dir=$(get_simple_conf data_directory | strip_quotes)
+ensure_dir "$db_dir" 0700
+if ! [ -e "$db_dir/PG_VERSION" ]; then
+	log="/local/postgresql/initdb_${ver}_main.log"
+	setuidgid postgres /usr/lib/postgresql/$ver/bin/initdb -D "$db_dir" \
+		> "$log" 2>&1
+	ok=$?
+	if [ "$ok" -ne 0 ]; then
+		cat "$log"
+		exit $ok
+	fi
+fi
+exit 0

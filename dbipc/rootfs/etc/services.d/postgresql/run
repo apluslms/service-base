@@ -1,0 +1,19 @@
+#!/bin/execlineb -P
+
+# Move stderr to out so it's piped to logger
+fdmove -c 2 1
+
+# get latest version
+backtick -n ver { pipeline { ls /usr/lib/postgresql/ } tail -n1 }
+importas -u ver ver
+
+# Notify service manager when postgres is up
+s6-notifyoncheck -w 500 -c "s6-setuidgid postgres redirfd -w 1 /dev/null fdmove -c 2 1 psql \"--command=SELECT version();\""
+
+# Drop privileges and set env
+s6-setuidgid postgres
+s6-env LANG=C.UTF-8 HOME=/var/lib/postgresql/
+
+# Execute postgres
+"/usr/lib/postgresql/${ver}/bin/postgres"
+  -c "config_file=/etc/postgresql/${ver}/main/postgresql.conf"

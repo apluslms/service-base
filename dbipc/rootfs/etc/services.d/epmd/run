@@ -1,0 +1,28 @@
+#!/bin/execlineb -P
+
+define daemon /usr/bin/epmd
+fdmove -c 2 1
+
+# Notify servicemanager when epmd is up
+s6-notifyoncheck -w 500 -c "s6-setuidgid rabbitmq redirfd -w 1 /dev/null fdmove -c 2 1 ${daemon} -names"
+
+trap -x {
+    SIGTERM {
+        importas pid !
+        foreground {
+            forx -o 0 dummy { 1 2 3 4 5 6 7 8 9 10 }
+            if {
+                s6-setuidgid rabbitmq
+                pipeline { ${daemon} -names }
+                grep -qsF "at port"
+            }
+            s6-sleep -m 500
+        }
+        kill -SIGTERM ${pid}
+    }
+}
+
+# Start rabbitmq daemon
+s6-setuidgid rabbitmq
+s6-env HOME=/var/lib/rabbitmq
+${daemon} -address ""

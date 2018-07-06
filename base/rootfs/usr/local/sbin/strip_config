@@ -1,0 +1,5 @@
+#!/bin/sh -eu
+[ -e "$1" ] || exit 1
+for f in "$@"; do
+    sed -i 's/#.*$//; s/\s*$//; /^$/d;' "$f"
+done

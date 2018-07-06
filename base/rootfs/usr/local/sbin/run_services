@@ -1,0 +1,9 @@
+#!/bin/sh
+[ "$1" ] || exit 1
+for s in "$@"; do
+    if ! [ -d "/run/s6/services/$s/" ]; then
+        echo "ERROR: Missing service dir /run/s6/services/$s/" >&2
+        continue
+    fi
+    s6-svc -o "/run/s6/services/$s"
+done

@@ -1,0 +1,36 @@
+#!/bin/execlineb -P
+
+define pid /var/run/rabbitmq/pid
+define daemon /usr/lib/rabbitmq/bin/rabbitmq-server
+define control /usr/sbin/rabbitmqctl
+
+# Move stderro to out, so it's handled by logger
+fdmove -c 2 1
+
+# Wait until epmd is running
+if { s6-svwait -t 10000 -U /var/run/s6/services/epmd/ }
+
+# Notify servicemanager when rabbitmq is up
+background -d {
+    fdmove 1 3
+    ifelse -X {
+        redirfd -w 1 /dev/null
+        ${control} wait ${pid}
+    } {
+        echo
+    }
+    rm ${pid}
+}
+fdclose 3
+
+# Trap exit signals, so we can kill rabbitmq correctly
+trap -x {
+    SIGTERM {
+        ${control} stop
+    }
+}
+
+# Start rabbitmq daemon
+s6-setuidgid rabbitmq
+s6-env HOME=/var/lib/rabbitmq
+${daemon}

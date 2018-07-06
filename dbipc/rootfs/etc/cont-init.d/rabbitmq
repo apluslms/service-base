@@ -1,0 +1,9 @@
+#!/bin/sh
+
+. /usr/local/lib/cont-init-functions.sh
+ENSURE_DIR_MODE=2775
+ENSURE_DIR_USER=rabbitmq
+
+ensure_dir "/run/rabbitmq"
+ensure_dir "/local/rabbitmq"
+ensure_dir "/local/rabbitmq/mnesia"
