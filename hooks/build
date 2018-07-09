@@ -1,17 +1,17 @@
 #!/bin/sh
 
-ver=${CACHE_TAG##*-}
+ver=$(echo "${CACHE_TAG}"|cut -d- -f2)
 if [ "$ver" ]; then
-    if [ "$ver" = "$CACHE_TAG" ]; then
-        ver=
-    else
-        ver="-$ver"
-    fi
+    ver="-$ver"
 fi
+
+echo "## Building layers for tag '$CACHE_TAG' and version '$ver'"
 
 for layer in base dbipc python3; do
     echo "############################################################"
     echo "### building layer '$layer'"
+    echo "### $ docker build --build-arg TAGVER=$ver"
+    echo "### >  -t $DOCKER_REPO:$layer $layer/"
     echo "############################################################"
 
     docker build --build-arg "TAGVER=$ver" -t $DOCKER_REPO:$layer "$layer/"
