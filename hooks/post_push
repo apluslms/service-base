@@ -1,7 +1,0 @@
-#!/bin/sh
-
-base=${CACHE_TAG%-*}
-if [ "$base" -a "$base" != "$CACHE_TAG" ]; then
-    docker tag $IMAGE_NAME $DOCKER_REPO:$base
-    docker push $DOCKER_REPO:$base
-fi

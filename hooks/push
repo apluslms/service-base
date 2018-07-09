@@ -1,0 +1,13 @@
+#!/bin/sh
+
+ver=${CACHE_TAG##*-}
+if [ "$ver" -a "$ver" = "$CACHE_TAG" ]; then
+    ver=
+fi
+
+for layer in base dbipc python3; do
+    docker push $DOCKER_REPO:$layer
+    if [ "$ver" ]; then
+        docker push $DOCKER_REPO:$layer-$ver
+    fi
+done

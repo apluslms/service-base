@@ -1,8 +1,26 @@
 #!/bin/sh
 
 ver=${CACHE_TAG##*-}
-if [ "$ver" -a "$ver" != "$CACHE_TAG" ]; then
-    ver="-$ver"
+if [ "$ver" ]; then
+    if [ "$ver" = "$CACHE_TAG" ]; then
+        ver=
+    else
+        ver="-$ver"
+    fi
 fi
 
-docker build --build-arg "TAGVER=$ver" -f $DOCKERFILE_PATH -t $IMAGE_NAME .
+for layer in base dbipc python3; do
+    echo "############################################################"
+    echo "### building layer '$layer'"
+    echo "############################################################"
+
+    docker build --build-arg "TAGVER=$ver" -t $DOCKER_REPO:$layer "$layer/"
+    res=$?
+    if [ $res -ne 0 ]; then
+        echo "Building layer $layer returned $res" >&2
+        exit $res
+    fi
+    if [ "$ver" ]; then
+        docker tag $DOCKER_REPO:$layer $DOCKER_REPO:$layer$ver
+    fi
+done
