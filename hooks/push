@@ -1,7 +1,7 @@
 #!/bin/sh
 
-ver=${CACHE_TAG##*-}
-if [ "$ver" -a "$ver" = "$CACHE_TAG" ]; then
+ver=${DOCKER_TAG##*-}
+if [ "$ver" -a "$ver" = "$DOCKER_TAG" ]; then
     ver=
 fi
 

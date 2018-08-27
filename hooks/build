@@ -1,11 +1,11 @@
 #!/bin/sh
 
-ver=$(echo "${CACHE_TAG}"|cut -d- -f2)
+ver=$(echo "${DOCKER_TAG}"|cut -d- -f2)
 if [ "$ver" ]; then
     ver="-$ver"
 fi
 
-echo "## Building layers for tag '$CACHE_TAG' and version '$ver'"
+echo "## Building layers for tag '$DOCKER_TAG' and version '$ver'"
 
 for layer in base dbipc python3; do
     echo "############################################################"
