@@ -12,8 +12,14 @@ for layer in $(grep -v "^\s*#" tags.txt); do
     echo "### building layer '$layer'"
     echo "### $ docker build --build-arg TAGVER=$ver"
     echo "### >  -t $DOCKER_REPO:$layer $layer/"
-    echo "############################################################"
 
+    if [ "$SOURCE_COMMIT" ]; then
+        echo "############################################################"
+        echo "### pulling latest image, so layer cache is update."
+        docker pull $DOCKER_REPO:$layer || true
+    fi
+
+    echo "############################################################"
     docker build --build-arg "TAGVER=$ver" -t $DOCKER_REPO:$layer "$layer/"
     res=$?
     if [ $res -ne 0 ]; then
