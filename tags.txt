@@ -2,3 +2,4 @@
 base
  dbipc
   python3
+   django

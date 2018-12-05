@@ -14,5 +14,3 @@ RUN apt_install \
     python3-wheel \
     python3-gunicorn \
     python3-psycopg2
-    
-
