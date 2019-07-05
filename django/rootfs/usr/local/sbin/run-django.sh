@@ -47,7 +47,7 @@ export HOME="$app_path"
 
 # With dev code, we need to rerun few init tasks
 if [ -e requirements.txt ]; then
-    python3 manage.py compilemessages -v0
+    python3 manage.py compilemessages -v0 || true
 fi
 setuidgid "$user" python3 manage.py collectstatic --noinput -v0
 
