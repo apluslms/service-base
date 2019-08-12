@@ -5,7 +5,17 @@ find /srv/ -mindepth 2 -maxdepth 2 -type f -iname 'requirements.txt' | while rea
     name=${name%%/*}
     venv=/local/venv_$name
 
-    [ -e "$venv" ] || python3 -m virtualenv -p python3 --system-site-packages "$venv"
+    if [ -e "$venv" ]; then
+        venv_py=$(echo "$venv/lib/python"*)
+        venv_py=${venv_py##*/}
+        if ! [ -e "/usr/lib/$venv_py" ]; then
+            # venv is for a different python minor version
+            echo " ... clearing old virtual env at $venv"
+            rm -rf "$venv"
+        fi
+    fi
+
+    [ -e "$venv" ] || python3 -m venv --system-site-packages "$venv"
 
     # Use shared cache for all containers with same data volume
     mkdir -p /data/.pip
