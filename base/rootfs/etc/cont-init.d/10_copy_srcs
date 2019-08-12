@@ -1,11 +1,12 @@
 #!/bin/sh -eu
-
 for d in /src/*/; do
     [ -d "$d" ] || continue
     name=${d#/src/}
     name=${name%/}
+    user=$(stat -c '%U' "/srv/$name/")
     rm -rf "/srv/$name/"*
     for sd in "${d}"*; do
         cp --recursive --preserve=mode "$sd" "/srv/$name/"
     done
+    chown -R $user "/srv/$name"
 done
