@@ -1,11 +1,11 @@
-FROM debian:stretch-slim
+FROM debian:buster-20190708-slim
 
 ENV LANG=C.UTF-8 \
     USER=root HOME=/root \
     S6_CMD_WAIT_FOR_SERVICES=1 \
     S6_CMD_WAIT_FOR_SERVICES_MAXTIME=10000
 
-ARG S6_VERSION=v1.21.8.0
+ARG S6_VERSION=v1.22.1.0
 
 COPY rootfs /
 
