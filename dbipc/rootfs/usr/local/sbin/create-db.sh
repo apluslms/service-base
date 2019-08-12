@@ -2,7 +2,7 @@
 
 user=$1
 db=$2
-setup_script=$3
+shift 2
 
 # Ensure local working dir (expected by services etc)
 mkdir -p /local/
@@ -21,15 +21,23 @@ while ! setuidgid postgres psql "--command=SELECT version();" >/dev/null 2>&1; d
     sleep 0.2
 done
 
-# Create user, database, migrate django, run setup and dump db
+# Create the user and the database
 setuidgid postgres createuser "$user"
 setuidgid postgres createdb -O "$user" "$db"
-setuidgid "$user" python3 manage.py migrate --noinput -v0 2>&1
-setuidgid "$user" python3 "$setup_script" 2>&1
+
+# Initialize the database
+if [ $# -gt 0 ]; then
+    export DATABASE_USER="$user"
+    export DATABASE_NAME="$db"
+    export DATABASE_IS_EMPTY=true
+    setuidgid "$user" "$@" 2>&1
+fi
+
+# Dump the database
 setuidgid "$user" pg_dump "$db" \
     | sed '/^\s*--/d;/^$/d' \
     | grep -vE '^(CREATE|COMMENT ON) EXTENSION' \
-    | gzip -c > "/srv/db_$db.sql.gz"
+    | gzip -c > "/srv/db-$db.sql.gz"
 
 # Stop postgresql daemon
 kill $pid

@@ -3,7 +3,7 @@ set -eu
 
 user=
 db=
-db_init=
+setup=
 init=
 app_path=
 
@@ -11,7 +11,7 @@ while [ $# -gt 0 ]; do
     case "$1" in
         -u) user=$2 ; shift ;;
         -d) db=$2 ; shift ;;
-        -s) db_init=$2 ; shift ;;
+        -s) setup=$2 ; shift ;;
         -i) init=$2 ; shift ;;
         -a) app_path=$2 ; shift ;;
         --) shift ; break ;;
@@ -26,7 +26,7 @@ done
 [ "$app_path" ] || app_path=/srv/$user
 app_name=${app_path%/}
 app_name=${app_name##*/}
-[ "$db_init" ] || db_init=/srv/$app_name-setup.py
+[ "$setup" ] || setup=/srv/$app_name-setup.py
 [ "$init" ] || init=/srv/$app_name-init.sh
 
 if [ ! -e "$app_path/manage.py" ]; then
@@ -42,16 +42,18 @@ export HOME="$app_path"
 # Use python from virtualenv if present
 [ -e "/local/venv_$app_name/bin/activate" ] && . /local/venv_$app_name/bin/activate
 
-# Ensure database state
-[ -e "$db_init" ] && init-django-db.sh "$user" "$db" "$db_init"
+# Ensure database state, will run manage.py migrate always
+init-db.sh "$user" "$db" django-migrate.sh
 
 # With dev code, we need to rerun few init tasks
 if [ -e requirements.txt ]; then
-    python3 manage.py compilemessages -v0 || true
+    # Compile binary versions of translation files
+    setuidgid "$user" python3 manage.py compilemessages -v0 || true
 fi
 setuidgid "$user" python3 manage.py collectstatic --noinput -v0
 
-# Run init script if present
+# Run setup and init scripts if present
+[ -e "$setup" ] && env "USER=$user" "HOME=$app_path" setuidgid "$user" python3 "$setup"
 [ -e "$init" ] && env "USER=$user" "HOME=$app_path" "$init"
 
 # Execute main script
