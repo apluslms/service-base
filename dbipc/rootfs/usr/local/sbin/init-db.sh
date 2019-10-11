@@ -23,7 +23,9 @@ if ! setuidgid "$user" psql -U "$user" "$db" "--command=SELECT version();" >/dev
         echo "Didn't find database dump from $dbfile and you didn't give initialization command, thus the script can't initialize the database" >&2
         exit 1
     fi
-elif [ $# -gt 0 ]; then
+fi
+
+if [ $# -gt 0 ]; then
     echo " .. Updating the DB using a setup script .."
     exec env \
         USER="$user" \
