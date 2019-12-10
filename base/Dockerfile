@@ -1,4 +1,4 @@
-FROM debian:buster-20190708-slim
+FROM debian:buster-20191118-slim
 
 ENV LANG=C.UTF-8 \
     USER=root HOME=/root \
