@@ -117,7 +117,7 @@ COPY myapp /srv/myapp/
 
 WORKDIR /srv/myapp/
 RUN python3 -m compileall -q .
-RUN pip_install -r requirements.txt
+RUN pip_install -r requirements.txt && rm requirements.txt
 RUN python3 manage.py compilemessages 2>&1
 RUN create-db.sh myapp myapp django-migrate.sh
 
