@@ -27,10 +27,12 @@ setuidgid postgres createdb -O "$user" "$db"
 
 # Initialize the database
 if [ $# -gt 0 ]; then
-    export DATABASE_USER="$user"
-    export DATABASE_NAME="$db"
-    export DATABASE_IS_EMPTY=true
-    setuidgid "$user" "$@" 2>&1
+    exec env \
+        USER="$user" \
+        DATABASE_USER="$user" \
+        DATABASE_NAME="$db" \
+        DATABASE_IS_EMPTY=true \
+        setuidgid "$user" "$@"
 fi
 
 # Dump the database
