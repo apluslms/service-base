@@ -24,7 +24,7 @@ RUN apt_install \
  && curl -LSs https://github.com/just-containers/s6-overlay/releases/download/$S6_VERSION/s6-overlay-amd64.tar.gz -o s6-overlay-amd64.tar.gz \
  && curl -LSs https://github.com/just-containers/s6-overlay/releases/download/$S6_VERSION/s6-overlay-amd64.tar.gz.sig -o s6-overlay-amd64.tar.gz.sig \
  # Validate signature
- && curl -LSs https://keybase.io/justcontainers/key.asc | gpg --import 2>/dev/null \
+ && gpg --keyserver pgp.surfnet.nl --recv-keys 6101B2783B2FD161 \
  && gpg --verify s6-overlay-amd64.tar.gz.sig s6-overlay-amd64.tar.gz \
  && rm -rf /root/.gnupg \
  # Install
