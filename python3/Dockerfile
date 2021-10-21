@@ -14,9 +14,4 @@ RUN apt_install \
     python3-setuptools \
     python3-venv \
     python3-wheel \
- && pip_install --upgrade \
-    # The latest pip version is needed to install some of dependencies of a-plus.
-    pip \
-    setuptools \
-    wheel \
  && :
