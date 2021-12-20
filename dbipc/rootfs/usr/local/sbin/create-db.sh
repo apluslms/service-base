@@ -1,4 +1,12 @@
-#!/bin/sh -eu
+#!/bin/sh -e
+
+flagname="${CONTAINER_TYPE}_NO_DATABASE"
+eval flag=\$$flagname
+if [ $flag ]; then
+    echo "Skipping database setup because '${flagname}' is set."
+    exit 0
+fi
+
 
 prog=${0##*/}
 user=$1

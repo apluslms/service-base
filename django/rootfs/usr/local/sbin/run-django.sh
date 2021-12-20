@@ -42,7 +42,7 @@ export HOME="$app_path"
 # Use python from virtualenv if present
 [ -e "/local/venv_$app_name/bin/activate" ] && . /local/venv_$app_name/bin/activate
 
-# Ensure database state, will run manage.py migrate always
+# Ensure database state, will run manage.py migrate if databases are enabled.
 init-db.sh "$user" "$db" django-migrate.sh
 
 # With dev code, we need to rerun few init tasks
