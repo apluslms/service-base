@@ -1,4 +1,4 @@
-FROM debian:bullseye-20211201-slim
+FROM debian:bullseye-20220125-slim
 
 ENV LANG=C.UTF-8 \
     USER=root HOME=/root \
