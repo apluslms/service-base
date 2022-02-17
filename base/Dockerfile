@@ -14,6 +14,8 @@ RUN apt_install \
       ca-certificates \
       git \
       gettext \
+      less \
+      nano \
       # temporary:
       gnupg \
       curl \
