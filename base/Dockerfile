@@ -17,23 +17,17 @@ RUN apt_install \
       less \
       nano \
       # temporary:
-      gnupg \
       curl \
 \
  # S6 Overlay
  && cd /tmp \
  # Download
  && curl -LSs https://github.com/just-containers/s6-overlay/releases/download/$S6_VERSION/s6-overlay-amd64.tar.gz -o s6-overlay-amd64.tar.gz \
- && curl -LSs https://github.com/just-containers/s6-overlay/releases/download/$S6_VERSION/s6-overlay-amd64.tar.gz.sig -o s6-overlay-amd64.tar.gz.sig \
- # Validate signature
- && gpg --keyserver pgp.surfnet.nl --recv-keys 6101B2783B2FD161 \
- && gpg --verify s6-overlay-amd64.tar.gz.sig s6-overlay-amd64.tar.gz \
- && rm -rf /root/.gnupg \
  # Install
  && tar -xzf s6-overlay-amd64.tar.gz -C / \
  # Clean
  && rm -rf /tmp/* \
- && apt_purge gnupg curl \
+ && apt_purge curl \
  && rm -rf /etc/init.d/ \
 \
  && ln -s /bin/s6-setuidgid /bin/setuidgid
