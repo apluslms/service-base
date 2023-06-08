@@ -1,5 +1,5 @@
 ARG TAGVER=
-FROM apluslms/service-base:base${TAGVER}
+FROM --platform=$TARGETPLATFORM apluslms/service-base:base${TAGVER}
 
 RUN mkdir -p /usr/share/man/man1/ /usr/share/man/man7/ \
  && apt_install \

@@ -1,5 +1,9 @@
 #!/bin/sh
 
+docker run --privileged --rm tonistiigi/binfmt --install all
+
+docker buildx create --use default
+
 ver=$(echo "${DOCKER_TAG}"|cut -d- -f2)
 if [ "$ver" ]; then
     ver="-$ver"
@@ -16,17 +20,21 @@ for layer in $(grep -v "^\s*#" tags.txt); do
     if [ "$SOURCE_COMMIT" ]; then
         echo "############################################################"
         echo "### pulling latest image, so layer cache is update."
-        docker pull $DOCKER_REPO:$layer || true
+        docker pull $DOCKER_REPO:$layer || true
     fi
 
     echo "############################################################"
-    docker build --build-arg "TAGVER=$ver" -t $DOCKER_REPO:$layer "$layer/"
+    if [ "$ver" ]; then
+        docker buildx build --push --platform linux/amd64,linux/arm64 --build-arg "TAGVER=$ver" \
+        -t $DOCKER_REPO:$layer \
+        -t $DOCKER_REPO:$layer$ver "$layer/"
+    else
+        docker buildx build --push --platform linux/amd64,linux/arm64 --build-arg "TAGVER=$ver" \
+        -t $DOCKER_REPO:$layer "$layer/"
+    fi
     res=$?
     if [ $res -ne 0 ]; then
         echo "Building layer $layer returned $res" >&2
         exit $res
-    fi
-    if [ "$ver" ]; then
-        docker tag $DOCKER_REPO:$layer $DOCKER_REPO:$layer$ver
     fi
 done

@@ -1,2 +1,2 @@
 # Dummy Dockerfile
-# check hoosk/build and hooks/push
+# check hooks/build and hooks/push

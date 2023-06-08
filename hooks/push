@@ -1,13 +1,3 @@
 #!/bin/sh
 
-ver=${DOCKER_TAG##*-}
-if [ "$ver" -a "$ver" = "$DOCKER_TAG" ]; then
-    ver=
-fi
-
-for layer in $(grep -v "^\s*#" tags.txt); do
-    docker push $DOCKER_REPO:$layer
-    if [ "$ver" ]; then
-        docker push $DOCKER_REPO:$layer-$ver
-    fi
-done
+# This hook is empty because the images were pushed to the registry in the build hook

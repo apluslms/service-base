@@ -1,5 +1,5 @@
 ARG TAGVER=
-FROM apluslms/service-base:dbipc${TAGVER}
+FROM --platform=$TARGETPLATFORM apluslms/service-base:dbipc${TAGVER}
 
 COPY rootfs /
 
