@@ -1,5 +1,5 @@
 ARG TAGVER=
-FROM apluslms/service-base:python3${TAGVER}
+FROM --platform=$TARGETPLATFORM apluslms/service-base:python3${TAGVER}
 
 COPY rootfs /
 RUN pip_install \
