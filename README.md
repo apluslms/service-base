@@ -11,7 +11,7 @@ The goal is to provide easy base to build web application development containers
 * `/etc/cont-init.d` includes scripts, which are run in order at init time before main command.
   Different layers add scripts here.
   More in S6 overly documentation.
-* `/etc/services.d/` contains service directories for S6 services (copied to `/run/s6/services/` by S6 overlay)
+* `/etc/services.d/` contains service directories for S6 services (copied to `/run/service/` by S6 overlay)
 * `/data` shared data volume for application containers
 * `/local` is a link to `/data/$CONTAINER_TYPE` (created by `/etc/cont-init.d/00_local_data`)
 * `/src` any files here are copied to `/srv/` (by `/etc/cont-init.d/10_copy_srcs`)
@@ -92,7 +92,6 @@ The goal is to provide easy base to build web application development containers
         * Else, execute `./manage.py help`
 
     The script will exit on first failure (`set -x`).
-
 
 ## Application container
 
