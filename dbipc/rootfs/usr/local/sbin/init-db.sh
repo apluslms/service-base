@@ -12,6 +12,12 @@ user=$1
 db=$2
 shift 2
 
+# Wait for postgresql to be ready
+while ! setuidgid postgres psql -U postgres "--command=SELECT 1;" >/dev/null 2>&1; do
+    echo " .. Waiting for postgresql .."
+    sleep 1
+done
+
 if ! setuidgid "$user" psql -U "$user" "$db" "--command=SELECT version();" >/dev/null 2>&1; then
     setuidgid postgres createuser "$user"
     setuidgid postgres createdb -O "$user" "$db"

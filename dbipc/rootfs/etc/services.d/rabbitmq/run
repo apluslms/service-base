@@ -8,7 +8,7 @@ define control /usr/sbin/rabbitmqctl
 fdmove -c 2 1
 
 # Wait until epmd is running
-if { s6-svwait -t 10000 -U /var/run/s6/services/epmd/ }
+if { s6-svwait -t 10000 -U /run/service/epmd/ }
 
 # Notify servicemanager when rabbitmq is up
 background -d {

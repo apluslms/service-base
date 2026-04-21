@@ -1,12 +1,12 @@
 ARG TAGVER=
-FROM --platform=$TARGETPLATFORM apluslms/service-base:base${TAGVER}
+FROM apluslms/service-base:base${TAGVER}
 
 RUN mkdir -p /usr/share/man/man1/ /usr/share/man/man7/ \
  && apt_install \
     postgresql \
     postgresql-client \
     rabbitmq-server \
- && rm -r /etc/init.d/ \
+ && rm -rf /etc/init.d/ \
           /var/lib/rabbitmq/* \
           /var/lib/postgresql/* \
  && rm -r /usr/share/postgresql/*/man /usr/share/man/ \

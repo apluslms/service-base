@@ -1,2 +1,2 @@
 #!/bin/sh
-exec pip3 install --no-cache-dir --disable-pip-version-check "$@"
+exec pip3 install --no-cache-dir --disable-pip-version-check --break-system-packages "$@"
